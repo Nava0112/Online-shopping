@@ -24,11 +24,11 @@ jobs:
           command: |
             INSTANT_CLIENT_VERSION=23_8
             INSTANT_CLIENT_URL="https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-23.8.0.25.04.zip"
-            wget --no-cookies --no-check-certificate \
-              --header "Cookie: oraclelicense=accept-securebackup-cookie" \
-              "$INSTANT_CLIENT_URL" -O instantclient.zip
+            curl -L -o instantclient.zip \
+              -H "Cookie: oraclelicense=accept-securebackup-cookie" \
+              "$INSTANT_CLIENT_URL"
             unzip instantclient.zip -d /usr/local/lib
-            ln -s /usr/local/lib/instantclient_23_8 /usr/local/lib/instantclient
+            ln -s /usr/local/lib/instantclient_$INSTANT_CLIENT_VERSION /usr/local/lib/instantclient
             rm -f instantclient.zip
 
       - run:
