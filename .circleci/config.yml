@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Install Oracle Instant Client from local zip
           command: |
-            unzip lib/instantclient-basic-linux.x64-23.8.0.25.04.zip -d /usr/local/lib
+            unzip instantclient-basic-linux.x64-23.8.0.25.04.zip -d /usr/local/lib
             ln -s /usr/local/lib/instantclient_23_8 /usr/local/lib/instantclient
 
       - run:

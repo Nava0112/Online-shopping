@@ -9,19 +9,20 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install required system libraries
-RUN apt-get update && apt-get install -y libaio1 wget unzip
+RUN apt-get update && apt-get install -y libaio1 unzip
 
-# Download and install Oracle Instant Client 23.8.0.25.04
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-23.8.0.25.04.zip && \
-    unzip instantclient-basic-linux.x64-23.8.0.25.04.zip && \
-    mv instantclient_23_8 /opt/oracle && \
-    rm instantclient-basic-linux.x64-23.8.0.25.04.zip
+# Copy Oracle Instant Client zip file from local project directory
+COPY instantclient-basic-linux.x64-23.8.0.25.04.zip /tmp/
 
-# Configure Oracle client environment
-ENV LD_LIBRARY_PATH=/opt/oracle
-ENV ORACLE_HOME=/opt/oracle
+# Extract and configure Oracle Instant Client
+RUN unzip /tmp/instantclient-basic-linux.x64-23.8.0.25.04.zip -d /opt/oracle && \
+    ln -s /opt/oracle/instantclient_23_8 /opt/oracle/instantclient && \
+    rm /tmp/instantclient-basic-linux.x64-23.8.0.25.04.zip
+# Set Oracle environment variables
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
+ENV ORACLE_HOME=/opt/oracle/instantclient
 
-# Copy application files
+# Copy application code into the container
 COPY . /app
 
 # Install Python dependencies
