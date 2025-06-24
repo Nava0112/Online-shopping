@@ -1,39 +1,26 @@
 version: 2.1
 
 jobs:
-  build_and_test:
+  build-and-test:
     docker:
-      - image: python:3.11-slim
-    environment:
-      LD_LIBRARY_PATH: /usr/local/lib/instantclient
-      ORACLE_HOME: /usr/local/lib/instantclient
-      DB_USER: system
-      DB_PASSWORD: 1234
-      DB_DSN: localhost:1521/ORCL
+      - image: cimg/python:3.10  # Just to run docker CLI
     steps:
       - checkout
+
+      - setup_remote_docker  # Needed to build and run Docker images
+
       - run:
-          name: Install system dependencies
+          name: Build Docker Image
           command: |
-            apt-get update
-            apt-get install -y libaio1 unzip
+            docker build -t my-flask-app .
+
       - run:
-          name: Install Oracle Instant Client
+          name: Run Pytest inside container
           command: |
-            INSTANT_CLIENT_VERSION=21_5
-            curl -o instantclient-basic-linux.x64-${INSTANT_CLIENT_VERSION}.zip https://download.oracle.com/otn_software/linux/instantclient/215000/instantclient-basic-linux.x64-${INSTANT_CLIENT_VERSION}.zip
-            unzip instantclient-basic-linux.x64-${INSTANT_CLIENT_VERSION}.zip -d /usr/local/lib
-            ln -s /usr/local/lib/instantclient_${INSTANT_CLIENT_VERSION} /usr/local/lib/instantclient
-            rm -f *.zip
-      - run:
-          name: Install Python dependencies
-          command: pip install --no-cache-dir -r requirements.txt
-      - run:
-          name: Run pytest
-          command: pytest
+            docker run --rm my-flask-app pytest
 
 workflows:
   version: 2
-  build_and_test:
+  test_and_build:
     jobs:
-      - build_and_test
+      - build-and-test
