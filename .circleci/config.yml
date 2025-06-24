@@ -17,19 +17,13 @@ jobs:
           name: Install system dependencies
           command: |
             apt-get update
-            apt-get install -y libaio1 unzip curl wget
+            apt-get install -y libaio1 unzip curl
 
       - run:
-          name: Download and Install Oracle Instant Client
+          name: Install Oracle Instant Client from local zip
           command: |
-            INSTANT_CLIENT_VERSION=23_8
-            INSTANT_CLIENT_URL="https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-23.8.0.25.04.zip"
-            curl -L -o instantclient.zip \
-              -H "Cookie: oraclelicense=accept-securebackup-cookie" \
-              "$INSTANT_CLIENT_URL"
-            unzip instantclient.zip -d /usr/local/lib
-            ln -s /usr/local/lib/instantclient_$INSTANT_CLIENT_VERSION /usr/local/lib/instantclient
-            rm -f instantclient.zip
+            unzip lib/instantclient-basic-linux.x64-23.8.0.25.04.zip -d /usr/local/lib
+            ln -s /usr/local/lib/instantclient_23_8 /usr/local/lib/instantclient
 
       - run:
           name: Install Python dependencies
