@@ -23,10 +23,13 @@ jobs:
           name: Install Oracle Instant Client
           command: |
             INSTANT_CLIENT_VERSION=23_8
-            wget https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-${INSTANT_CLIENT_VERSION}.zip
-            unzip instantclient-basic-linux.x64-${INSTANT_CLIENT_VERSION}.zip -d /usr/local/lib
-            ln -s /usr/local/lib/instantclient_${INSTANT_CLIENT_VERSION} /usr/local/lib/instantclient
-            rm -f *.zip
+            INSTANT_CLIENT_URL="https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-23.8.0.25.04.zip"
+            wget --no-cookies --no-check-certificate \
+              --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+              "${INSTANT_CLIENT_URL}" -O instantclient.zip
+            unzip instantclient.zip -d /usr/local/lib
+            ln -s /usr/local/lib/instantclient_23_8 /usr/local/lib/instantclient
+            rm -f instantclient.zip
 
       - run:
           name: Install Python dependencies
@@ -34,7 +37,9 @@ jobs:
 
       - run:
           name: Run pytest
-          command: pytest
+          command: |
+            export LD_LIBRARY_PATH=/usr/local/lib/instantclient
+            pytest
 
 workflows:
   version: 2
