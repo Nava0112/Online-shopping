@@ -12,12 +12,13 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y libaio1 unzip
 
 # Copy Oracle Instant Client zip file from local project directory
-COPY instantclient-basic-linux.x64-23.8.0.25.04.zip /tmp/
+COPY lib/instantclient-basic-linux.x64-23.8.0.25.04.zip /tmp/
 
 # Extract and configure Oracle Instant Client
 RUN unzip /tmp/instantclient-basic-linux.x64-23.8.0.25.04.zip -d /opt/oracle && \
     ln -s /opt/oracle/instantclient_23_8 /opt/oracle/instantclient && \
     rm /tmp/instantclient-basic-linux.x64-23.8.0.25.04.zip
+    
 # Set Oracle environment variables
 ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
 ENV ORACLE_HOME=/opt/oracle/instantclient
